@@ -1,0 +1,9 @@
+# Daily encrypted backup to Gitea (scripts/backup_to_gitea.sh). Needs the passphrase file, so run the
+# script by hand once first.
+[Unit]
+Description=Upwork Radar backup to Gitea
+
+[Service]
+Type=oneshot
+WorkingDirectory=%h/upwork-radar
+ExecStart=%h/upwork-radar/scripts/backup_to_gitea.sh
