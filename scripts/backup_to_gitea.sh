@@ -42,12 +42,12 @@ openssl enc -aes-256-cbc -pbkdf2 -iter 200000 -salt -in "$tmp/private.tar.gz" -o
 # Branch `backup` holds only the encrypted file, one commit per snapshot (never force-pushed).
 # Built in a throwaway repo so no extra branch ever appears in this one (or in `push --all`).
 wt="$tmp/wt"
-git init -q "$wt"
+git init -q -b backup "$wt"
 git -C "$wt" config user.name "$(git config user.name)"
 git -C "$wt" config user.email "$(git config user.email)"
 if git ls-remote --exit-code -q "$GITEA_BACKUP_URL" backup >/dev/null 2>&1; then
   git -C "$wt" fetch -q "$GITEA_BACKUP_URL" backup
-  git -C "$wt" checkout -q FETCH_HEAD
+  git -C "$wt" checkout -q -B backup FETCH_HEAD
 fi
 cp "$tmp/private.tar.gz.enc" "$wt/private.tar.gz.enc"
 git -C "$wt" add -f private.tar.gz.enc
