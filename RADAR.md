@@ -35,7 +35,7 @@ python3 -m unittest discover tests      # tests (fake model, no Claude usage)
 
 ```bash
 git clone https://github.com/BasilSuhail/upwork-radar.git ~/upwork-radar
-cp scripts/linux/upwork-radar.* ~/.config/systemd/user/ && systemctl --user daemon-reload
+cp scripts/linux/upwork-radar* ~/.config/systemd/user/ && systemctl --user daemon-reload
 systemctl --user enable --now upwork-radar.service
 ```
 
