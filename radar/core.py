@@ -25,13 +25,14 @@ TASK: read the job the user pastes and answer with ONE JSON object, no markdown,
   "title": "job title, from the post or a short summary",
   "score": 0-10 integer, how likely this freelancer wins AND does the job well,
   "verdict": "apply" | "maybe" | "skip",
-  "niche": "ai-automation" | "power-bi" | "python-fullstack" | "other",
+  "niche": "ai-automation" | "power-bi" | "python-fullstack" | "consulting" | "other",
   "reasons": ["max 3 short reasons for the score"],
   "red_flags": ["client or job risks: unverified payment, tiny budget, vague scope, off-platform contact, test work for free, too many proposals; empty if none"],
   "proposal": "the proposal text, or empty string when verdict is skip"
 }}
 
 SCORING: 8-10 = core niche, clear scope, fair budget, healthy client. 5-7 = partial fit or some risk.
+Consulting (business/IT/AI strategy, process or systems review) is a niche, not off-niche.
 0-4 = outside the niches (bookkeeping, tax, data entry, design...), scam signs, or needs skills not in the profile.
 
 PROPOSAL RULES (only when verdict is apply or maybe):
