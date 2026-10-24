@@ -24,6 +24,7 @@ if [[ -f $tmp/private/repo.env ]]; then
   [[ -e $REPO/.env ]] && mv "$REPO/.env" "$REPO/.env.before-restore.$(date +%s)"
   mv "$tmp/private/repo.env" "$REPO/.env"
 fi
+mv "$tmp/private/repo.bundle" "$DATA/repo.bundle"   # full history incl. main: git clone "$DATA/repo.bundle"
 if [[ $(uname) == Linux ]]; then mkdir -p ~/.config && (umask 077; printf '%s\n' "$pass" > "${RADAR_PASSFILE:-$HOME/.config/upwork-radar-backup-pass}")
 else security add-generic-password -U -s upwork-radar-backup -a "$USER" -w "$pass"; fi
 echo "Restored $DATA. Start it: python3 -m radar serve  (or the systemd unit in scripts/linux/)."

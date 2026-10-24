@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Full backup to the owner's own Gitea: every code branch, plus ~/.upwork-radar (profile, database, config)
+# Full backup to the owner's own Gitea: every work branch, a bundle of the whole repo, plus ~/.upwork-radar (profile, database, config)
 # packed into ONE AES-256 encrypted file on branch `backup`. No readable secret ever lands in git.
 # GitHub (origin) gets code only, through normal pushes; this script never touches it.
 # Gitea address: GITEA_BACKUP_URL in ~/.upwork-radar/radar.conf.
@@ -26,8 +26,10 @@ fi
 
 cd "$REPO"
 git remote get-url gitea >/dev/null 2>&1 || git remote add gitea "$GITEA_BACKUP_URL"
-git push -q gitea --all
-git push -q gitea --tags
+# Work branches go up as normal branches; main/master can't be pushed directly (protocol hook),
+# so the full history, main included, travels as a git bundle inside the encrypted pack.
+branches=$(git for-each-ref --format='%(refname:short)' refs/heads | grep -vxE 'main|master' || true)
+[[ -n $branches ]] && git push -q gitea $branches
 
 # Private data: consistent DB copy even while the web page is writing to it.
 tmp=$(mktemp -d); trap 'rm -rf "$tmp"' EXIT
@@ -36,6 +38,7 @@ rsync -a --exclude 'radar.db*' "$DATA/" "$tmp/private/upwork-radar/"
 [[ -f $DATA/radar.db ]] && python3 -c 'import sqlite3,sys; s=sqlite3.connect(sys.argv[1]); d=sqlite3.connect(sys.argv[2]); s.backup(d)' \
   "$DATA/radar.db" "$tmp/private/upwork-radar/radar.db"
 [[ -f $REPO/.env ]] && cp "$REPO/.env" "$tmp/private/repo.env"
+git bundle create -q "$tmp/private/repo.bundle" --all
 tar -czf "$tmp/private.tar.gz" -C "$tmp" private
 openssl enc -aes-256-cbc -pbkdf2 -iter 200000 -salt -in "$tmp/private.tar.gz" -out "$tmp/private.tar.gz.enc" -pass fd:3 3<<<"$pass"
 

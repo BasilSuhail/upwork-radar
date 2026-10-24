@@ -46,8 +46,9 @@ Set `RADAR_HOST` to the machine's Tailscale IP so the page is reachable from you
 - **GitHub** `BasilSuhail/upwork-radar`: fork of `AIXerum/Upwork-Auto-Jobs-Applier-using-AI`, code only.
   Public, so no personal data ever goes in the repo. `upstream` points at the original (push disabled);
   pull their changes with `git fetch upstream && git merge upstream/main`.
-- **Gitea** (owner's server, private): every code branch plus branch `backup`, which holds one AES-256
-  encrypted file with all of `~/.upwork-radar` and the repo `.env`.
+- **Gitea** (owner's server, private): every work branch plus branch `backup`, which holds one AES-256
+  encrypted file with all of `~/.upwork-radar`, the repo `.env` and a `git bundle` of the whole repo
+  (`main` included, since the protocol hook blocks pushing `main` directly).
 
 ## Backup and restore
 
