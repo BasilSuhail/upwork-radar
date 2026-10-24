@@ -40,18 +40,17 @@ tar -czf "$tmp/private.tar.gz" -C "$tmp" private
 openssl enc -aes-256-cbc -pbkdf2 -iter 200000 -salt -in "$tmp/private.tar.gz" -out "$tmp/private.tar.gz.enc" -pass fd:3 3<<<"$pass"
 
 # Branch `backup` holds only the encrypted file, one commit per snapshot (never force-pushed).
+# Built in a throwaway repo so no extra branch ever appears in this one (or in `push --all`).
 wt="$tmp/wt"
-if git ls-remote --exit-code -q gitea backup >/dev/null 2>&1; then
-  git fetch -q gitea backup
-  git worktree add -q --detach "$wt" FETCH_HEAD
-else
-  git worktree add -q --no-checkout --detach "$wt"
-  git -C "$wt" checkout -q --orphan backup-snapshot
-  git -C "$wt" read-tree --empty
+git init -q "$wt"
+git -C "$wt" config user.name "$(git config user.name)"
+git -C "$wt" config user.email "$(git config user.email)"
+if git ls-remote --exit-code -q "$GITEA_BACKUP_URL" backup >/dev/null 2>&1; then
+  git -C "$wt" fetch -q "$GITEA_BACKUP_URL" backup
+  git -C "$wt" checkout -q FETCH_HEAD
 fi
 cp "$tmp/private.tar.gz.enc" "$wt/private.tar.gz.enc"
 git -C "$wt" add -f private.tar.gz.enc
 git -C "$wt" commit -q -m "chore(backup): snapshot $(date '+%Y-%m-%d %H:%M')"
-git -C "$wt" push -q gitea HEAD:refs/heads/backup
-git worktree remove --force "$wt"
+git -C "$wt" push -q "$GITEA_BACKUP_URL" HEAD:refs/heads/backup
 echo "Backed up to Gitea: code branches + backup ($(du -h "$tmp/private.tar.gz.enc" | cut -f1) encrypted)."
