@@ -1,0 +1,9 @@
+[Unit]
+Description=Daily Upwork Radar backup to Gitea
+
+[Timer]
+OnCalendar=*-*-* 03:30
+Persistent=true
+
+[Install]
+WantedBy=timers.target

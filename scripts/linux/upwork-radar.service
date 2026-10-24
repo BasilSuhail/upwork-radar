@@ -1,0 +1,19 @@
+# Upwork Radar web page as a systemd user service. Install:
+#   cp scripts/linux/upwork-radar* ~/.config/systemd/user/ && systemctl --user daemon-reload
+#   systemctl --user enable --now upwork-radar.service upwork-radar-backup.timer
+# RADAR_HOST (bind address: the tailnet IP, so the page is never on the LAN or internet) and RADAR_PORT
+# come from ~/.upwork-radar/radar.conf, never from git. Expects the repo at ~/upwork-radar.
+[Unit]
+Description=Upwork Radar (paste-in job scorer)
+After=network-online.target
+
+[Service]
+WorkingDirectory=%h/upwork-radar
+EnvironmentFile=%h/.upwork-radar/radar.conf
+Environment=PATH=%h/.local/bin:/usr/local/bin:/usr/bin:/bin
+ExecStart=/usr/bin/python3 -m radar serve
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=default.target

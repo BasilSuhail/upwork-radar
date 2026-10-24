@@ -5,6 +5,8 @@
   Keywords: Langgraph, litellm, LLAMA3, Upwork automation, automated job applications, AI cover letter generator, job scraping, freelance tools
 -->
 
+> **Fork note:** this fork adds **Upwork Radar**, a paste-in job scorer and proposal drafter that never touches Upwork itself. See [RADAR.md](RADAR.md).
+
 # UpworkScribe AI: Automated Jobs Application on Upwork
 
 **UpworkScribe AI is not just a tool; it's your partner in navigating the competitive world of freelancing, helping you secure more projects and grow your freelance career. 🚀**
