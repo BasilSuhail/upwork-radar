@@ -12,7 +12,7 @@ DATA=${RADAR_HOME:-$HOME/.upwork-radar}
 source "$DATA/radar.conf"
 : "${GITEA_BACKUP_URL:?set GITEA_BACKUP_URL in $DATA/radar.conf}"
 
-PASSFILE=$HOME/.config/upwork-radar-backup-pass
+PASSFILE=${RADAR_PASSFILE:-$HOME/.config/upwork-radar-backup-pass}
 if [[ $(uname) == Linux ]]; then pass=$(cat "$PASSFILE" 2>/dev/null || true)
 else pass=$(security find-generic-password -s upwork-radar-backup -w 2>/dev/null || true); fi
 if [[ -z $pass ]]; then
